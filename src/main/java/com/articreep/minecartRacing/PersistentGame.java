@@ -1,8 +1,5 @@
 package com.articreep.minecartRacing;
 
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -16,39 +13,28 @@ import org.bukkit.event.entity.EntityDismountEvent;
 import org.bukkit.event.entity.EntityMountEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class PersistentGame implements Game, Listener {
-    public static final ChatColor[] COLORS = new ChatColor[]{
-            ChatColor.RED,
-            ChatColor.BLUE,
-            ChatColor.GREEN,
-            ChatColor.YELLOW,
-            ChatColor.AQUA,
-            ChatColor.LIGHT_PURPLE,
-            ChatColor.GOLD,
-            ChatColor.DARK_RED,
-            ChatColor.DARK_BLUE,
-            ChatColor.DARK_GREEN,
-            ChatColor.DARK_AQUA,
-            ChatColor.DARK_PURPLE,
-            ChatColor.DARK_GRAY,
-            ChatColor.GRAY
-    };
     public static final double MAX_SPEED = 2.0;
     public static final boolean SUSTAIN_SPEED = false;
     public static final double SPEED_INCREMENT = 0.1;
-    Map<Player, ChatColor> playerToColor = new HashMap<>();
-    Map<Player, GameMinecart> playerToMinecart = new HashMap<>();
+    private final Map<Player, TeamColor> playerToColor = new HashMap<>();
+    private final Map<Player, GameMinecart> playerToMinecart = new HashMap<>();
+    private final WoolGenerator woolGenerator = new WoolGenerator();
+    private BukkitTask woolGenerationTask;
+    public static final int WOOL_RESET_INTERVAL = 20;
 
 
     @Override
     public void addPlayer(Player player) {
-        ChatColor color = chooseColor();
+        TeamColor color = chooseColor();
         playerToColor.put(player, color);
-        player.sendMessage("You are " + color + color.getName());
+        player.sendMessage("You are " + color.chatColor + color);
     }
 
     @Override
@@ -64,23 +50,41 @@ public class PersistentGame implements Game, Listener {
 
     @Override
     public void startGame() {
-        // Register listeners
         Bukkit.getPluginManager().registerEvents(this, MinecartRacing.getInstance());
+        woolGenerationTask = woolGenerationLoop();
+    }
+
+    private BukkitTask woolGenerationLoop() {
+        return new BukkitRunnable() {
+            int i = 0;
+            @Override
+            public void run() {
+                woolGenerator.generateWool(playerToColor);
+                if (i == WOOL_RESET_INTERVAL) {
+                    woolGenerator.resetBlocksOutOfRange(playerToColor.keySet());
+                    i = 0;
+                }
+                i++;
+            }
+        }.runTaskTimer(MinecartRacing.getInstance(), 0, 20);
     }
 
     @Override
     public void stopGame() {
         HandlerList.unregisterAll(this);
+        if (woolGenerationTask != null) {
+            woolGenerationTask.cancel();
+        }
     }
 
-    public ChatColor chooseColor() {
-        for (ChatColor color : COLORS) {
+    public TeamColor chooseColor() {
+        for (TeamColor color : TeamColor.values()) {
             if (!playerToColor.containsValue(color)) {
                 return color;
             }
         }
         // otherwise choose a random color
-        return COLORS[(int) (Math.random() * COLORS.length)];
+        return TeamColor.values()[(int) (Math.random() * TeamColor.values().length)];
     }
 
     @EventHandler
