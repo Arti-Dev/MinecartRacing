@@ -36,4 +36,13 @@ public enum TeamColor {
         }
         return materials;
     }
+
+    public static TeamColor getTeamColor(Material material) {
+        for (TeamColor color : TeamColor.values()) {
+            if (color.getMaterial().equals(material)) {
+                return color;
+            }
+        }
+        return null;
+    }
 }

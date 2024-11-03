@@ -1,6 +1,8 @@
 package com.articreep.minecartRacing;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
@@ -17,7 +19,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class PersistentGame implements Game, Listener {
     public static final double MAX_SPEED = 2.0;
@@ -115,13 +119,30 @@ public class PersistentGame implements Game, Listener {
         if (block == null) return;
         if (!(event.getEntity() instanceof Arrow arrow)) return;
         if (!(arrow.getShooter() instanceof Player player)) return;
-        if (!playerToMinecart.containsKey(player)) return;
 
-        // Get minecart that player is in
-        playerToMinecart.get(player).increaseSpeed(SPEED_INCREMENT);
+        TeamColor color = TeamColor.getTeamColor(block.getType());
+        if (color == null) return;
 
-        block.breakNaturally();
-        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
+        if (playerToColor.containsValue(color)) {
+            Set<Player> affectedPlayers = new HashSet<>();
+            for (Map.Entry<Player, TeamColor> entry : playerToColor.entrySet()) {
+                if (entry.getValue().equals(color)) {
+                    affectedPlayers.add(entry.getKey());
+                }
+            }
+
+            for (Player affectedPlayer : affectedPlayers) {
+                if (playerToMinecart.containsKey(affectedPlayer)) {
+                    playerToMinecart.get(affectedPlayer).increaseSpeed(SPEED_INCREMENT);
+                    affectedPlayer.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
+                    // todo play a separate sound if you were boosted by someone else
+                }
+            }
+        }
+
+        block.getWorld().spawnParticle(Particle.BLOCK, block.getLocation().add(0.5, 0.5, 0.5),
+                50, 0.3, 0.3, 0.3, block.getBlockData());
+        block.setType(Material.AIR);
         event.getEntity().remove();
     }
 }
