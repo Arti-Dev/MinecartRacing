@@ -11,13 +11,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.text.DecimalFormat;
-
 public class GameMinecart {
     private final RideableMinecart minecart;
     private final boolean doSustainSpeed;
     private double sustainedSpeed;
-    private BukkitTask task;
+    private final BukkitTask task;
 
     public GameMinecart(RideableMinecart minecart, double maxSpeed, boolean doSustainSpeed) {
         this.minecart = minecart;
