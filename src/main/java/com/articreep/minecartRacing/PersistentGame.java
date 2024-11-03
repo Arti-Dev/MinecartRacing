@@ -39,6 +39,7 @@ public class PersistentGame implements Game, Listener {
     };
     public static final double MAX_SPEED = 2.0;
     public static final boolean SUSTAIN_SPEED = false;
+    public static final double SPEED_INCREMENT = 0.1;
     Map<Player, ChatColor> playerToColor = new HashMap<>();
     Map<Player, GameMinecart> playerToMinecart = new HashMap<>();
 
@@ -113,12 +114,10 @@ public class PersistentGame implements Game, Listener {
         if (!playerToMinecart.containsKey(player)) return;
 
         // Get minecart that player is in
-        playerToMinecart.get(player).increaseSpeed(0.1);
+        playerToMinecart.get(player).increaseSpeed(SPEED_INCREMENT);
 
         block.breakNaturally();
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
         event.getEntity().remove();
-
-        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("Speed: " + playerToMinecart.get(player).getSpeed()));
     }
 }

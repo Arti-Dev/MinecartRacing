@@ -1,14 +1,20 @@
 package com.articreep.minecartRacing;
 
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.RideableMinecart;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import java.text.DecimalFormat;
+
 public class GameMinecart {
-    private RideableMinecart minecart;
+    private final RideableMinecart minecart;
     private final boolean doSustainSpeed;
     private double sustainedSpeed;
     private BukkitTask task;
@@ -18,7 +24,7 @@ public class GameMinecart {
         this.minecart.setMaxSpeed(maxSpeed);
         this.sustainedSpeed = 0.0;
         this.doSustainSpeed = doSustainSpeed;
-        if (doSustainSpeed) task = createTask();
+        task = createTask();
     }
 
     public GameMinecart(RideableMinecart minecart, boolean doSustainSpeed) {
@@ -33,7 +39,9 @@ public class GameMinecart {
                     cancel();
                     return;
                 }
-                setMinecartSpeed(sustainedSpeed);
+                if (doSustainSpeed) setMinecartSpeed(sustainedSpeed);
+                sendActionBarMessage();
+
             }
         }.runTaskTimer(MinecartRacing.getInstance(), 0, 1);
     }
@@ -82,5 +90,13 @@ public class GameMinecart {
     public void kill() {
         if (task != null) task.cancel();
         minecart.remove();
+    }
+
+    public void sendActionBarMessage() {
+        if (minecart.getPassengers().isEmpty()) return;
+        if (minecart.getPassengers().getFirst() instanceof Player player) {
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
+                    new TextComponent(ChatColor.GREEN + "Speed: " + String.format("%.2f", getSpeed())));
+        }
     }
 }
