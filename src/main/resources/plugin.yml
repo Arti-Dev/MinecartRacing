@@ -1,0 +1,4 @@
+name: MinecartRacing
+version: '1.0-SNAPSHOT'
+main: com.articreep.minecartRacing.MinecartRacing
+api-version: '1.21'
