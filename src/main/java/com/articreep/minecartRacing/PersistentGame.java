@@ -1,9 +1,6 @@
 package com.articreep.minecartRacing;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
@@ -134,8 +131,10 @@ public class PersistentGame implements Game, Listener {
 
             for (Player affectedPlayer : affectedPlayers) {
                 if (playerToMinecart.containsKey(affectedPlayer)) {
+                    World world = affectedPlayer.getWorld();
                     playerToMinecart.get(affectedPlayer).increaseSpeed(SPEED_INCREMENT);
                     affectedPlayer.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
+                    world.spawnParticle(Particle.SMALL_GUST, affectedPlayer.getLocation().add(0, 1, 0), 30, 0.6, 0.6, 0.6, 0.05);
                     // todo play a separate sound if you were boosted by someone else
                 }
             }
