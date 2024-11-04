@@ -17,7 +17,9 @@ public final class MinecartRacing extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        if (persistentGame != null) {
+            persistentGame.stopGame();
+        }
     }
 
     public static MinecartRacing getInstance() {

@@ -41,6 +41,11 @@ public class WoolGenerator {
         blocksAffected.removeAll(blocksToReset);
     }
 
+    public void resetAllBlocks() {
+        blocksAffected.forEach(block -> block.setType(DEFAULT_MATERIAL));
+        blocksAffected.clear();
+    }
+
     private Set<Block> getDefaultMaterialBlocksAroundPlayer(Player player) {
         Set<Block> defaultMaterialBlocks = new HashSet<>();
         for (int x = -DETECTION_RADIUS; x <= DETECTION_RADIUS; x++) {

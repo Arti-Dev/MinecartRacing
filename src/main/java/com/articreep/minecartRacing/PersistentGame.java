@@ -79,6 +79,7 @@ public class PersistentGame implements Game, Listener {
         if (woolGenerationTask != null) {
             woolGenerationTask.cancel();
         }
+        woolGenerator.resetAllBlocks();
     }
 
     public TeamColor chooseColor() {
