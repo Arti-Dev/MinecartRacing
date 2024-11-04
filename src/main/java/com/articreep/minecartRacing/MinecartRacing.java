@@ -11,7 +11,7 @@ public final class MinecartRacing extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         instance = this;
-        persistentGame = new PersistentGame();
+        persistentGame = new RaceGame();
         persistentGame.startGame();
     }
 

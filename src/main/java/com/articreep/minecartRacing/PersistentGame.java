@@ -2,6 +2,7 @@ package com.articreep.minecartRacing;
 
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.RideableMinecart;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityMountEvent;
 
 public class PersistentGame extends Game {
@@ -11,6 +12,7 @@ public class PersistentGame extends Game {
     }
 
     @Override
+    @EventHandler
     public void onMinecartMount(EntityMountEvent event) {
         // todo make this only work around a start line
         if (!(event.getEntity() instanceof Player player)) return;
