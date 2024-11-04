@@ -4,10 +4,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.RideableMinecart;
 import org.bukkit.event.entity.EntityMountEvent;
 
-public class PersistentGame extends Game {
+public class RaceGame extends Game {
 
-    public PersistentGame() {
-        super(2.0, false, 0.1, 20);
+    public RaceGame() {
+        super(2.0, true, 0.1, -1);
     }
 
     @Override
