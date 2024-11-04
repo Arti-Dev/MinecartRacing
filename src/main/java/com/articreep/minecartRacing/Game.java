@@ -126,7 +126,7 @@ public abstract class Game implements Listener {
                 if (playerToMinecart.containsKey(affectedPlayer)) {
                     World world = affectedPlayer.getWorld();
                     playerToMinecart.get(affectedPlayer).increaseSpeed(SPEED_INCREMENT);
-                    affectedPlayer.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
+                    affectedPlayer.playSound(affectedPlayer, Sound.BLOCK_NOTE_BLOCK_CHIME, 1, 1);
                     world.spawnParticle(Particle.SMALL_GUST, affectedPlayer.getLocation().add(0, 1, 0), 30, 0.6, 0.6, 0.6, 0.05);
                     // todo play a separate sound if you were boosted by someone else
                 }
