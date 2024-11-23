@@ -1,9 +1,12 @@
 package com.articreep.minecartRacing;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.util.BoundingBox;
 
 import java.util.*;
 
@@ -24,6 +27,20 @@ public class WoolGenerator {
                 chooseColor(new HashSet<>(playerMap.values()));
                 block.setType(chooseColor(new HashSet<>(playerMap.values())));
                 blocksAffected.add(block);
+            }
+        }
+    }
+
+    public void generateWoolBetweenLocations(Map<Player, TeamColor> playerMap, BoundingBox box, World world) {
+        for (double x = box.getMinX(); x < box.getMaxX(); x++) {
+            for (double y = box.getMinY(); y < box.getMaxY(); y++) {
+                for (double z = box.getMinZ(); z < box.getMaxZ(); z++) {
+                    Block block = new Location(world, x, y, z).getBlock();
+                    if (block.getType() == DEFAULT_MATERIAL) {
+                        block.setType(chooseColor(new HashSet<>(playerMap.values())));
+                        blocksAffected.add(block);
+                    }
+                }
             }
         }
     }
@@ -76,6 +93,11 @@ public class WoolGenerator {
         return blocks;
     }
 
+    /**
+     * Chooses a random color out of the possible colors provided.
+     * @param possibleColors The colors to choose from.
+     * @return The chosen color.
+     */
     private Material chooseColor(Set<TeamColor> possibleColors) {
         if (possibleColors.size() < MINIMUM_COLORS) {
             addRandomColors(possibleColors);
