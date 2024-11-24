@@ -2,3 +2,8 @@ name: MinecartRacing
 version: '1.0-SNAPSHOT'
 main: com.articreep.minecartRacing.MinecartRacing
 api-version: '1.21'
+commands:
+  minecartracing:
+    description: Minecart Racing command
+    usage: /<command> <start|forcestop>
+    aliases: [mcr]
