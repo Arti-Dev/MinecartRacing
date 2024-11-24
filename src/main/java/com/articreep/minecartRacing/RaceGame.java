@@ -1,6 +1,9 @@
 package com.articreep.minecartRacing;
 
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
@@ -22,6 +25,9 @@ public class RaceGame extends Game {
     private BukkitTask finishLineTask = null;
     private final int gameHeight = 10;
 
+    private long startTime;
+    private int playersFinished = 0;
+
     public RaceGame(Location startLocation, Location endLocation, Vector lineDirection, int lineLength) {
         super(2.0, true, 0.1, 20);
 
@@ -33,13 +39,44 @@ public class RaceGame extends Game {
 
     @Override
     public void startGame() {
-        super.startGame();
         Location otherCorner = endLocation.clone().add(lineDirection.clone().multiply(lineLength));
         otherCorner.add(0, gameHeight, 0);
         BoundingBox box = new BoundingBox(startLocation.getX(), startLocation.getY(), startLocation.getZ(),
                 otherCorner.getX(), otherCorner.getY(), otherCorner.getZ());
         woolGenerator.generateWoolBetweenLocations(playerToColor, box, startLocation.getWorld());
-        finishLineTask = finishLineLoop();
+        new BukkitRunnable() {
+            int i = 3;
+            @Override
+            public void run() {
+                // colored title countdown
+                String title;
+                if (i == 0) {
+                    title = ChatColor.GREEN + "GO!";
+                } else if (i == 1) {
+                    title = ChatColor.YELLOW + "1";
+                } else if (i == 2) {
+                    title = ChatColor.GOLD + "2";
+                } else {
+                    title = ChatColor.RED + "3";
+                }
+
+                for (Player player : playerToMinecart.keySet()) {
+                    player.sendTitle(title, "", 0, 20, 0);
+                    if (i == 0) player.playSound(player, Sound.BLOCK_BELL_USE, 1, 1);
+                    else player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
+                }
+                if (i-- == 0) {
+                    superStartGame();
+                    finishLineTask = finishLineLoop();
+                    startTime = System.currentTimeMillis();
+                    cancel();
+                }
+            }
+        }.runTaskTimer(MinecartRacing.getInstance(), 0, 20);
+    }
+
+    private void superStartGame() {
+        super.startGame();
     }
 
     @Override
@@ -61,7 +98,10 @@ public class RaceGame extends Game {
                     Vector endToMinecart = minecart.getLocation().toVector().subtract(endLocation.toVector());
                     endToMinecart.setY(0);
                     if (endToMinecart.angle(vector) < 0.1) {
-                        player.sendMessage("You crossed the finish line!");
+                        playersFinished++;
+                        Bukkit.broadcastMessage(player.getName() + " finished #" + playersFinished + " in " + (System.currentTimeMillis() - startTime) / 1000.0 + " seconds");
+                        removePlayerLaunch(player);
+                        if (playerToMinecart.isEmpty()) stopGame();
                     }
                 }
             }
