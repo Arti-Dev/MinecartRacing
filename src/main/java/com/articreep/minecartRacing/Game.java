@@ -4,6 +4,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.minecart.RideableMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -26,8 +27,8 @@ public abstract class Game implements Listener {
     public final int WOOL_RESET_INTERVAL;
     protected final Map<Player, TeamColor> playerToColor = new HashMap<>();
     protected final Map<Player, GameMinecart> playerToMinecart = new HashMap<>();
-    private final WoolGenerator woolGenerator = new WoolGenerator();
-    private BukkitTask woolGenerationTask;
+    protected final WoolGenerator woolGenerator = new WoolGenerator();
+    protected BukkitTask woolGenerationTask;
 
     public Game(double maxSpeed, boolean sustainSpeed, double speedIncrement, int woolResetInterval) {
         MAX_SPEED = maxSpeed;
@@ -39,7 +40,15 @@ public abstract class Game implements Listener {
     public void addPlayer(Player player) {
         TeamColor color = chooseColor();
         playerToColor.put(player, color);
+        assignMinecart(player);
         player.sendMessage("You are " + color.chatColor + color);
+    }
+
+    public void assignMinecart(Player player) {
+        if (!playerToColor.containsKey(player)) return;
+        if (playerToMinecart.containsKey(player)) return;
+        if (!(player.getVehicle() instanceof RideableMinecart minecart)) return;
+        playerToMinecart.put(player, new GameMinecart(minecart, MAX_SPEED, SUSTAIN_SPEED));
     }
 
     public void removePlayer(Player player) {
@@ -54,10 +63,9 @@ public abstract class Game implements Listener {
 
     public void startGame() {
         Bukkit.getPluginManager().registerEvents(this, MinecartRacing.getInstance());
-        woolGenerationTask = woolGenerationLoop();
     }
 
-    private BukkitTask woolGenerationLoop() {
+    BukkitTask woolGenerationLoop() {
         return new BukkitRunnable() {
             int i = 0;
             @Override

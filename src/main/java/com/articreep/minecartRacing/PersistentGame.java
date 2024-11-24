@@ -20,6 +20,11 @@ public class PersistentGame extends Game {
         if (playerToMinecart.containsKey(player)) return;
 
         addPlayer(player);
-        playerToMinecart.put(player, new GameMinecart(minecart, MAX_SPEED, SUSTAIN_SPEED));
+    }
+
+    @Override
+    public void startGame() {
+        super.startGame();
+        woolGenerationTask = woolGenerationLoop();
     }
 }
