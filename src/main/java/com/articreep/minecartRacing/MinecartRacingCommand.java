@@ -13,7 +13,7 @@ public class MinecartRacingCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (raceGame != null) {
+        if (raceGame != null && raceGame.hasStarted()) {
             raceGame.stopGame();
             raceGame = null;
             sender.sendMessage("Ended game");

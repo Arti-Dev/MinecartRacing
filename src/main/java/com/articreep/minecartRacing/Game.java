@@ -3,6 +3,7 @@ package com.articreep.minecartRacing;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.RideableMinecart;
 import org.bukkit.event.EventHandler;
@@ -14,6 +15,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +31,7 @@ public abstract class Game implements Listener {
     protected final Map<Player, GameMinecart> playerToMinecart = new HashMap<>();
     protected final WoolGenerator woolGenerator = new WoolGenerator();
     protected BukkitTask woolGenerationTask;
+    protected boolean hasStarted = false;
 
     public Game(double maxSpeed, boolean sustainSpeed, double speedIncrement, int woolResetInterval) {
         MAX_SPEED = maxSpeed;
@@ -61,8 +64,24 @@ public abstract class Game implements Listener {
         playerToColor.remove(player);
     }
 
+    public void removePlayerLaunch(Player player) {
+        Vector vector = player.getLocation().getDirection().multiply(2).setY(1);
+        if (playerToMinecart.containsKey(player)) {
+            Minecart minecart = playerToMinecart.get(player).getMinecart();
+            vector = minecart.getVelocity().setY(1);
+        }
+        removePlayer(player);
+        Vector finalVector = vector;
+        Bukkit.getScheduler().runTaskLater(MinecartRacing.getInstance(), () -> {
+            player.setVelocity(finalVector);
+            player.playSound(player, Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1, 1);
+        }, 2);
+    }
+
     public void startGame() {
+        // todo sometimes these events don't get registered. potentially because of lingering listeners from previous games
         Bukkit.getPluginManager().registerEvents(this, MinecartRacing.getInstance());
+        hasStarted = true;
     }
 
     BukkitTask woolGenerationLoop() {
@@ -86,6 +105,7 @@ public abstract class Game implements Listener {
             woolGenerationTask.cancel();
         }
         woolGenerator.resetAllBlocks();
+        hasStarted = false;
     }
 
     private TeamColor chooseColor() {
@@ -145,5 +165,9 @@ public abstract class Game implements Listener {
                 50, 0.3, 0.3, 0.3, block.getBlockData());
         block.setType(Material.AIR);
         event.getEntity().remove();
+    }
+
+    public boolean hasStarted() {
+        return hasStarted;
     }
 }
