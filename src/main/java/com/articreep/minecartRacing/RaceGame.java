@@ -108,7 +108,8 @@ public class RaceGame extends Game {
                     endToMinecart.setY(0);
                     if (endToMinecart.angle(vector) < 0.1) {
                         playersFinished++;
-                        Bukkit.broadcastMessage(player.getName() + " finished #" + playersFinished + " in " + (System.currentTimeMillis() - startTime) / 1000.0 + " seconds");
+                        Bukkit.broadcastMessage(player.getName() + " finished #" + playersFinished + " in " + (System.currentTimeMillis() - startTime) / 1000.0 + " seconds"
+                        + " with " + String.format("%.3f", playerToMinecart.get(player).getSpeed()) + " speed");
                         removePlayerLaunch(player);
                         if (playerToMinecart.isEmpty()) stopGame();
                     }
