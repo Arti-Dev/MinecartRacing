@@ -13,11 +13,12 @@ public class MinecartRacingCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (raceGame != null && raceGame.hasStarted()) {
+        if (raceGame != null && !raceGame.hasEnded()) {
+            raceGame.cancelCountdown();
             raceGame.stopGame();
             raceGame = null;
             sender.sendMessage("Ended game");
-        } else if (raceGame == null) {
+        } else {
             FileConfiguration config = MinecartRacing.getInstance().getConfig();
             Vector incomingDirection = BlockFace.valueOf(config.getString("end-line-direction")).getDirection();
             int lineLength = config.getInt("end-line-length");
@@ -28,8 +29,6 @@ public class MinecartRacingCommand implements CommandExecutor {
             raceGame.addNearbyPlayers();
             raceGame.startGame();
             sender.sendMessage("Created and started game");
-        } else {
-            sender.sendMessage("Wait a little bit before running that again.");
         }
         return true;
     }

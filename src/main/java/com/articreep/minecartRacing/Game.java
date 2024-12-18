@@ -32,6 +32,7 @@ public abstract class Game implements Listener {
     protected final WoolGenerator woolGenerator = new WoolGenerator();
     protected BukkitTask woolGenerationTask;
     protected boolean hasStarted = false;
+    protected boolean hasEnded = false;
 
     public Game(double maxSpeed, boolean sustainSpeed, double speedIncrement, int woolResetInterval) {
         MAX_SPEED = maxSpeed;
@@ -105,7 +106,7 @@ public abstract class Game implements Listener {
             woolGenerationTask.cancel();
         }
         woolGenerator.resetAllBlocks();
-        hasStarted = false;
+        hasEnded = true;
     }
 
     private TeamColor chooseColor() {
@@ -169,5 +170,9 @@ public abstract class Game implements Listener {
 
     public boolean hasStarted() {
         return hasStarted;
+    }
+
+    public boolean hasEnded() {
+        return hasEnded;
     }
 }

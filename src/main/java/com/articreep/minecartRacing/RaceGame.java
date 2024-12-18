@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.RideableMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityMountEvent;
-import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
@@ -24,6 +23,8 @@ public class RaceGame extends Game {
     private int lineLength;
     private BukkitTask finishLineTask = null;
     private final int gameHeight = 10;
+
+    private boolean cancelCountdown = false;
 
     private long startTime;
     private int playersFinished = 0;
@@ -48,6 +49,10 @@ public class RaceGame extends Game {
             int i = 3;
             @Override
             public void run() {
+                if (cancelCountdown) {
+                    cancel();
+                    return;
+                }
                 // colored title countdown
                 String title;
                 if (i == 0) {
@@ -73,6 +78,10 @@ public class RaceGame extends Game {
                 }
             }
         }.runTaskTimer(MinecartRacing.getInstance(), 0, 20);
+    }
+
+    public void cancelCountdown() {
+        cancelCountdown = true;
     }
 
     private void superStartGame() {
