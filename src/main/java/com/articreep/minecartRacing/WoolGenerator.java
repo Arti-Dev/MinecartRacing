@@ -14,7 +14,7 @@ public class WoolGenerator {
     Set<Block> blocksAffected = new HashSet<>();
     public static final int DETECTION_RADIUS = 30;
     public static final Material DEFAULT_MATERIAL = Material.WHITE_WOOL;
-    public static final int MINIMUM_COLORS = 2;
+    public static final int MINIMUM_COLORS = 8;
 
     /**
      * Generates wool colors for blocks around players.
