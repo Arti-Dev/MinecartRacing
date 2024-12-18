@@ -66,7 +66,8 @@ public class RaceGame extends Game {
                 }
 
                 for (Player player : playerToMinecart.keySet()) {
-                    player.sendTitle(title, "", 0, 20, 0);
+                    TeamColor color = playerToColor.get(player);
+                    player.sendTitle(title, ChatColor.GRAY + "You are " + color.getChatColor() + color, 0, 20, 0);
                     if (i == 0) player.playSound(player, Sound.BLOCK_BELL_USE, 1, 1);
                     else player.playSound(player, Sound.BLOCK_NOTE_BLOCK_BELL, 1, 1);
                 }
