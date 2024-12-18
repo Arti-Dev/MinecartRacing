@@ -20,6 +20,9 @@ public final class MinecartRacing extends JavaPlugin {
         if (persistentGame != null) {
             persistentGame.stopGame();
         }
+        if (MinecartRacingCommand.raceGame != null) {
+            MinecartRacingCommand.raceGame.stopGame();
+        }
     }
 
     public static MinecartRacing getInstance() {

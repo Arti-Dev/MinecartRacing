@@ -9,7 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.util.Vector;
 
 public class MinecartRacingCommand implements CommandExecutor {
-    private static RaceGame raceGame = null;
+    protected static RaceGame raceGame = null;
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

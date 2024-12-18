@@ -30,7 +30,7 @@ public class RaceGame extends Game {
     private int playersFinished = 0;
 
     public RaceGame(Location startLocation, Location endLocation, Vector lineDirection, int lineLength) {
-        super(2.0, true, 0.1, 20);
+        super(2.0, true, 0.05, 20);
 
         this.startLocation = startLocation;
         this.endLocation = endLocation;
