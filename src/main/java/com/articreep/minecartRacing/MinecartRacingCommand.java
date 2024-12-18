@@ -17,7 +17,7 @@ public class MinecartRacingCommand implements CommandExecutor {
             raceGame.stopGame();
             raceGame = null;
             sender.sendMessage("Ended game");
-        } else {
+        } else if (raceGame == null) {
             FileConfiguration config = MinecartRacing.getInstance().getConfig();
             Vector incomingDirection = BlockFace.valueOf(config.getString("end-line-direction")).getDirection();
             int lineLength = config.getInt("end-line-length");
@@ -28,6 +28,8 @@ public class MinecartRacingCommand implements CommandExecutor {
             raceGame.addNearbyPlayers();
             raceGame.startGame();
             sender.sendMessage("Created and started game");
+        } else {
+            sender.sendMessage("Wait a little bit before running that again.");
         }
         return true;
     }
