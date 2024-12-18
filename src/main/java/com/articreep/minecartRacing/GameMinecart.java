@@ -20,6 +20,7 @@ public class GameMinecart {
     public GameMinecart(RideableMinecart minecart, double maxSpeed, boolean doSustainSpeed) {
         this.minecart = minecart;
         this.minecart.setMaxSpeed(maxSpeed);
+        this.minecart.setInvulnerable(true);
         this.sustainedSpeed = 0.0;
         this.doSustainSpeed = doSustainSpeed;
         task = createTask();
