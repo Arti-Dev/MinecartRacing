@@ -10,7 +10,7 @@ A quick remake of the minigame from Party Games, but for 1.21.3
 
 You'll need:
 - A 1.21.3 Spigot/Paper Server
-- The [map](https://arti-dev.github.io/downloads/mcr.zip) (optional)
+- The map ([world](https://arti-dev.github.io/downloads/mcr.zip)/[schematic](https://arti-dev.github.io/downloads/mcr.schem)) (optional)
 
 *1.21.4 Paper servers may be supported, but it's unknown at the time of writing since they've recently decided to hard fork*
 
