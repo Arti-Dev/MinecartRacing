@@ -12,7 +12,9 @@ public enum TeamColor {
     GREEN(ChatColor.GREEN, Material.GREEN_WOOL),
     YELLOW(ChatColor.YELLOW, Material.YELLOW_WOOL),
     PINK(ChatColor.LIGHT_PURPLE, Material.PINK_WOOL),
-    ORANGE(ChatColor.GOLD, Material.ORANGE_WOOL),;
+    ORANGE(ChatColor.GOLD, Material.ORANGE_WOOL),
+    BROWN(ChatColor.GOLD, Material.BROWN_WOOL),
+    AQUA(ChatColor.AQUA, Material.CYAN_WOOL);
 
     final ChatColor chatColor;
     final Material material;
